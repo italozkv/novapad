@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NovaPad Admin</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">N</span>
+      <div>
+        <h1>NovaPad Admin</h1>
+        <p>Database console para licencas, devices e servidor.</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="use-project-data">Usar projeto</button>
+      <button id="choose-db">Banco</button>
+      <button id="open-db-folder">Pasta</button>
+      <button id="backup-db">Backup</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="db-header">
+      <div class="path-line">
+        <span>Banco conectado</span>
+        <strong id="db-path">...</strong>
+      </div>
+      <div class="metrics">
+        <div><span>Licencas</span><strong id="metric-licenses">0</strong></div>
+        <div><span>Ativas</span><strong id="metric-active">0</strong></div>
+        <div><span>Revogadas</span><strong id="metric-revoked">0</strong></div>
+        <div><span>Devices</span><strong id="metric-devices">0</strong></div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel create-panel">
+        <div class="section-head">
+          <h2>Novo registro</h2>
+          <button id="apply-preset">Preset</button>
+        </div>
+        <form id="license-form" class="form">
+          <label>Plano
+            <select id="plan">
+              <option value="free">Free</option>
+              <option value="trial" selected>Trial</option>
+              <option value="pro">Pro</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="status">
+              <option value="active">Ativa</option>
+              <option value="trial" selected>Trial</option>
+              <option value="expired">Expirada</option>
+              <option value="revoked">Revogada</option>
+            </select>
+          </label>
+          <label>Validade em dias
+            <input id="validity-days" type="number" min="0" step="1" placeholder="14">
+          </label>
+          <label>Max devices
+            <input id="max-devices" type="number" min="1" step="1" value="1">
+          </label>
+          <label class="wide">Email da conta opcional
+            <input id="user-id" type="text" placeholder="cliente@email.com">
+          </label>
+          <div class="features wide">
+            <label><input id="feature-sync" type="checkbox" checked> Sync</label>
+            <label><input id="feature-export-pdf" type="checkbox" checked> Export PDF</label>
+            <label><input id="feature-themes" type="checkbox" checked> Themes</label>
+            <label><input id="feature-ai-assist" type="checkbox"> AI Assist</label>
+          </div>
+          <button class="primary wide" type="submit">Gerar licenca</button>
+        </form>
+        <textarea id="generated-key" readonly placeholder="A licenca gerada aparece aqui. Ela comeca com NP- e deve ir no campo Licenca do NovaPad."></textarea>
+        <div class="button-row">
+          <button id="copy-key">Copiar licenca</button>
+          <button id="use-key-search">Buscar licenca</button>
+        </div>
+      </aside>
+
+      <section class="panel database-panel">
+        <div class="database-titlebar">
+          <div>
+            <h2>Licencas</h2>
+            <p>Grid principal do banco NovaPad</p>
+          </div>
+          <input id="search" type="search" placeholder="Buscar por id, usuario, plano ou status">
+        </div>
+        <div class="viewbar">
+          <button class="view-tab active" id="add-record">+ Registro</button>
+          <button class="view-tool" type="button">Campos</button>
+          <button class="view-tool" type="button">Filtro</button>
+          <button class="view-tool" type="button">Agrupar</button>
+          <button class="view-tool" type="button">Ordenar</button>
+          <button class="view-tool" type="button">Altura</button>
+          <button class="view-tool" type="button">Cores</button>
+        </div>
+        <div id="license-list" class="license-list"></div>
+      </section>
+
+      <aside class="panel inspector-panel">
+        <div class="section-head">
+          <h2>Inspector</h2>
+          <button id="refresh">Atualizar</button>
+        </div>
+        <div id="details" class="details empty">Selecione uma licenca.</div>
+      </aside>
+    </section>
+
+    <section class="panel app-key-panel">
+      <div class="section-head">
+        <h2>Servidor</h2>
+        <button id="generate-app-key">Gerar App key</button>
+      </div>
+      <p class="hint">App key nao ativa plano. Ela autentica o NovaPad com o servidor e deve ser igual no servidor e no campo App key do NovaPad.</p>
+      <div class="form app-key-form">
+        <label>Arquivo
+          <input id="app-key-path" type="text">
+        </label>
+        <label>App key
+          <input id="app-key" type="password" placeholder="novapad-dev-key">
+        </label>
+        <button id="save-app-key" class="primary">Salvar App key</button>
+        <button id="copy-app-key">Copiar</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="./renderer.js"></script>
+</body>
+</html>

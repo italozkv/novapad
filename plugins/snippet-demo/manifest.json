@@ -1,0 +1,7 @@
+{
+  "name": "snippet-demo",
+  "version": "1.0.0",
+  "description": "Plugin de teste que cria um snippet demo na biblioteca do NovaPad.",
+  "main": "plugin.js",
+  "author": "NovaPad"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "discord-rich-presence",
+  "version": "1.0.0",
+  "description": "Mostra o NovaPad no Discord Rich Presence com tempo de uso e opcionalmente nota/workspace.",
+  "main": "plugin.js",
+  "author": "NovaPad"
+}

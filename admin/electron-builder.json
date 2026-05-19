@@ -1,0 +1,36 @@
+{
+  "appId": "com.novapad.admin",
+  "productName": "NovaPad Admin",
+  "extraMetadata": {
+    "main": "admin/main.js"
+  },
+  "directories": {
+    "output": "dist-admin"
+  },
+  "files": [
+    "admin/**/*",
+    "server/**/*",
+    "!server/node_modules/**/*",
+    "src/novapad.ico",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "src/novapad.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  }
+}

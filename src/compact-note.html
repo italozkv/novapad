@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Janela compacta do NovaPad para anotações rápidas."/>
+<meta name="theme-color" content="#f0c400"/>
+<title>Nota Compacta</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+
+  :root {
+    --bg: #2d2d30;
+    --panel: #24242a;
+    --text: #f5f3ea;
+    --muted: rgba(245, 243, 234, 0.5);
+    --yellow: #f0c400;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: linear-gradient(180deg, var(--yellow) 0 14px, var(--bg) 14px 100%);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    height: 100vh;
+    overflow: hidden;
+    border: 1px solid rgba(240, 196, 0, 0.45);
+    border-radius: 16px;
+  }
+  .shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 16px 12px;
+    color: #3f2f00;
+    -webkit-app-region: drag;
+    user-select: none;
+  }
+  .title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .sub {
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .close {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid rgba(63, 47, 0, 0.18);
+    background: rgba(255, 255, 255, 0.28);
+    color: #3f2f00;
+    cursor: pointer;
+    font-size: 14px;
+    -webkit-app-region: no-drag;
+  }
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 14px 14px;
+  }
+  textarea {
+    width: 100%;
+    flex: 1;
+    min-height: 250px;
+    resize: none;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    background: rgba(20, 20, 24, 0.52);
+    color: var(--text);
+    padding: 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  textarea::placeholder { color: var(--muted); }
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+  button.action {
+    flex: 1;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+  }
+  button.primary {
+    background: var(--yellow);
+    color: #2d2200;
+    border-color: var(--yellow);
+    font-weight: 700;
+  }
+  .hint {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="head">
+      <div>
+        <div class="title" id="compact-title">Quick Note</div>
+        <div class="sub" id="compact-sub">Fast sticky-note style</div>
+      </div>
+      <button class="close" id="btn-close">x</button>
+    </div>
+    <div class="body">
+      <textarea id="compact-input" placeholder="Write a quick note...&#10;&#10;Ctrl+Enter saves&#10;Ctrl+F6 closes"></textarea>
+      <div class="actions">
+        <button class="action" id="btn-clear">Clear</button>
+        <button class="action primary" id="btn-save">Save note</button>
+      </div>
+      <div class="hint" id="compact-hint">The note saves directly into NovaPad</div>
+    </div>
+  </div>
+<script>
+  const input = document.getElementById('compact-input');
+  const btnSave = document.getElementById('btn-save');
+  const btnClear = document.getElementById('btn-clear');
+  const btnClose = document.getElementById('btn-close');
+  const strings = {
+    en: {
+      title: 'Quick Note',
+      sub: 'Fast sticky-note style',
+      placeholder: 'Write a quick note...\\n\\nCtrl+Enter saves\\nCtrl+F6 closes',
+      clear: 'Clear',
+      save: 'Save note',
+      hint: 'The note saves directly into NovaPad',
+    },
+    'pt-BR': {
+      title: 'Nota Compacta',
+      sub: 'Modo rápido estilo autoadesiva',
+      placeholder: 'Escreva uma anotação...\\n\\nCtrl+Enter salva\\nCtrl+F6 fecha',
+      clear: 'Limpar',
+      save: 'Salvar nota',
+      hint: 'A nota salva direto no NovaPad',
+    },
+  };
+
+  async function applyLocale() {
+    const settings = await window.api.settings.load();
+    const lang = settings?.language === 'pt-BR' ? 'pt-BR' : 'en';
+    const text = strings[lang];
+    document.documentElement.lang = lang;
+    document.getElementById('compact-title').textContent = text.title;
+    document.getElementById('compact-sub').textContent = text.sub;
+    document.getElementById('compact-hint').textContent = text.hint;
+    input.placeholder = text.placeholder;
+    btnClear.textContent = text.clear;
+    btnSave.textContent = text.save;
+  }
+
+  async function saveNote() {
+    const content = String(input.value || '').trim();
+    if (!content) return;
+    const ok = await window.api.compactNote.save(content);
+    if (!ok) return;
+    input.value = '';
+  }
+
+  btnSave.addEventListener('click', saveNote);
+  btnClear.addEventListener('click', () => { input.value = ''; input.focus(); });
+  btnClose.addEventListener('click', () => window.api.compactNote.close());
+  input.addEventListener('keydown', async event => {
+    if (event.ctrlKey && event.key === 'Enter') {
+      event.preventDefault();
+      await saveNote();
+    }
+    if (event.ctrlKey && event.key === 'F6') {
+      event.preventDefault();
+      window.api.compactNote.close();
+    }
+  });
+
+  window.addEventListener('keydown', event => {
+    if (event.ctrlKey && event.key === 'F6') {
+      event.preventDefault();
+      window.api.compactNote.close();
+    }
+  });
+
+  applyLocale().finally(() => input.focus());
+</script>
+</body>
+</html>

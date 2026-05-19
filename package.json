@@ -1,0 +1,75 @@
+{
+  "name": "novapad",
+  "version": "1.0.0",
+  "description": "Bloco de notas moderno com exportação múltipla",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "set ELECTRON_RUN_AS_NODE=&& electron .",
+    "admin": "set ELECTRON_RUN_AS_NODE=&& electron ./admin",
+    "server": "npm --prefix server start",
+    "license:key": "node scripts/generate-license-key.js",
+    "build": "electron-builder --win portable",
+    "build-installer": "electron-builder --win nsis",
+    "build-admin": "electron-builder --config admin/electron-builder.json --win portable",
+    "build-admin-installer": "electron-builder --config admin/electron-builder.json --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.novapad.app",
+    "productName": "NovaPad",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/novapad.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://example.com/novapad/"
+      }
+    ],
+    "files": [
+      "src/**/*",
+      "plugins/**/*",
+      "package.json"
+    ]
+  },
+  "dependencies": {
+    "ace-builds": "^1.43.6",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.9.0",
+    "codemirror": "^5.65.21",
+    "discord-rpc": "^4.0.1",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.8.3",
+    "express": "^4.22.1",
+    "express-rate-limit": "^7.5.1",
+    "node-machine-id": "^1.1.12",
+    "pdfjs-dist": "^5.7.284",
+    "tesseract.js": "^7.0.0"
+  }
+}

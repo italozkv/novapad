@@ -1,0 +1,10 @@
+{
+  "name": "discord-rich-presence",
+  "version": "1.0.0",
+  "description": "Discord Rich Presence para o NovaPad",
+  "main": "plugin.js",
+  "author": "NovaPad",
+  "interface": {
+    "displayName": "Discord Rich Presence"
+  }
+}
